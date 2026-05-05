@@ -6,7 +6,8 @@ import geopandas as gpd
 from shapely.geometry import box
 from sqlalchemy.types import String
 from geoalchemy2 import Geometry
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
+from config import db_engine
 
 # ===============================================
 # DATABASE CONFIGURATION
@@ -177,15 +178,12 @@ def main() -> None:
     if not MASTER_DIR.exists() or not MASTER_DIR.is_dir():
         raise ValueError(f"MASTER_DIR does not exist or is not a directory: {MASTER_DIR}")
 
-    # Create engine
-    engine = create_engine(POSTGRES_URL)
-
     # Ensure target schema exists
-    ensure_schema(engine, TARGET_SCHEMA)
+    ensure_schema(db_engine, TARGET_SCHEMA)
 
     # Replace existing table if it exists
     if REPLACE_EXISTING_TABLES:
-        drop_table(engine, TARGET_SCHEMA, TARGET_TABLE_NAME)
+        drop_table(db_engine, TARGET_SCHEMA, TARGET_TABLE_NAME)
 
     print(f"Exporting combined GeoDataFrame to PostGIS...")
 
@@ -196,7 +194,7 @@ def main() -> None:
 
             gdf.to_postgis(
                 name=TARGET_TABLE_NAME,
-                con=engine,
+                con=db_engine,
                 schema=TARGET_SCHEMA,
                 if_exists="append",
                 index=False,
@@ -208,12 +206,11 @@ def main() -> None:
 
     print(f"Creating spatial index...")
 
-    create_spatial_index(engine, TARGET_SCHEMA, TARGET_TABLE_NAME, geom_col="geometry")
+    create_spatial_index(db_engine, TARGET_SCHEMA, TARGET_TABLE_NAME, geom_col="geometry")
 
 
 if __name__ == "__main__":
     MASTER_DIR = Path("./data/overturemaps")
-    POSTGRES_URL = "postgresql+psycopg2://postgres:password@localhost:5433/address_gis"
     TARGET_SCHEMA = "public"
     REPLACE_EXISTING_TABLES = True
     main()
