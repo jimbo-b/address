@@ -22,3 +22,5 @@ CREATE_DB_URL = (
 )
 
 create_db_engine = create_engine(POSTGRES_ADMIN_URL, isolation_level="AUTOCOMMIT")
+
+db_engine = create_engine(POSTGRES_ADMIN_URL)
