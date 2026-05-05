@@ -21,6 +21,6 @@ CREATE_DB_URL = (
     f"{POSTGRES_PORT}/{POSTGRES_CREATE_DB}"
 )
 
-create_db_engine = create_engine(POSTGRES_ADMIN_URL, isolation_level="AUTOCOMMIT")
+create_db_engine = create_engine(CREATE_DB_URL, isolation_level="AUTOCOMMIT")
 
-db_engine = create_engine(POSTGRES_ADMIN_URL)
+db_engine = create_engine(CREATE_DB_URL)
