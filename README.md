@@ -60,6 +60,7 @@ streamlit run simple_app.py
 
 ## Project Structure
 
+```
 address/
 ├── config.py
 ├── create_address_gis_database.py
@@ -69,3 +70,4 @@ address/
 ├── pyproject.toml
 └── data/
     └── overturemaps/
+```
